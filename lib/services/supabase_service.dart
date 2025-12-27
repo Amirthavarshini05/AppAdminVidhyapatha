@@ -136,14 +136,16 @@ class SupabaseService {
     bool ascending = true,
   }) async {
     try {
-      var query = client.from(tableName).select();
-
       if (orderBy != null) {
-        query = query.order(orderBy, ascending: ascending);
+        final response = await client
+            .from(tableName)
+            .select()
+            .order(orderBy, ascending: ascending);
+        return List<Map<String, dynamic>>.from(response);
+      } else {
+        final response = await client.from(tableName).select();
+        return List<Map<String, dynamic>>.from(response);
       }
-
-      final response = await query;
-      return List<Map<String, dynamic>>.from(response);
     } catch (e) {
       print('Error fetching data from $tableName: $e');
       return [];

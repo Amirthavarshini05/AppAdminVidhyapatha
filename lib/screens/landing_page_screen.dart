@@ -189,7 +189,7 @@ class _LandingPageScreenState extends State<LandingPageScreen>
               children: [
                 ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/dashboard');
+                    Navigator.of(context).pushNamed('/dashboard');
                   },
                   icon: const Icon(Icons.dashboard, size: 20),
                   label: const Text('Admin Dashboard'),
@@ -205,7 +205,7 @@ class _LandingPageScreenState extends State<LandingPageScreen>
                 ),
                 OutlinedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/signin');
+                    Navigator.of(context).pushNamed('/signin');
                   },
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -523,7 +523,7 @@ class _LandingPageScreenState extends State<LandingPageScreen>
           const SizedBox(height: 32),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/dashboard');
+              Navigator.of(context).pushNamed('/dashboard');
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),

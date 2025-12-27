@@ -18,15 +18,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Career Guidance App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: const AppWrapper(),
-    );
+    return const AppWrapper();
   }
 }
 
@@ -80,110 +72,56 @@ class _AppWrapperState extends State<AppWrapper> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    return Navigator(
-      onGenerateRoute: (settings) {
-        // Public routes
-        if (settings.name == '/' || !_isAuthenticated) {
-          return MaterialPageRoute(
-            builder: (context) => const LandingPageScreen(),
-          );
-        }
-
-        if (settings.name == '/signin') {
-          return MaterialPageRoute(
-            builder: (context) => SignInScreen(onLogin: _handleLogin),
-          );
-        }
-
-        if (settings.name == '/signup') {
-          return MaterialPageRoute(
-            builder: (context) => SignUpScreen(onSignup: _handleLogin),
-          );
-        }
-
-        if (settings.name == '/profile-setup-basic') {
-          return MaterialPageRoute(
-            builder: (context) => ProfileSetupBasicScreen(onLogin: _handleLogin),
-          );
-        }
-
-        if (settings.name == '/roadmap') {
-          return MaterialPageRoute(
-            builder: (context) => const RoadmapPageScreen(),
-          );
-        }
-
-        // Protected routes
-        if (_isAuthenticated) {
-          switch (settings.name) {
-            case '/dashboard':
-              return MaterialPageRoute(
-                builder: (context) => MainScaffold(
-                  currentRoute: '/dashboard',
-                  onLogout: _handleLogout,
-                  child: const DashboardScreen(),
-                ),
-              );
-            case '/colleges':
-              return MaterialPageRoute(
-                builder: (context) => MainScaffold(
-                  currentRoute: '/colleges',
-                  onLogout: _handleLogout,
-                  child: const CollegesScreen(),
-                ),
-              );
-            case '/scholarships':
-              return MaterialPageRoute(
-                builder: (context) => MainScaffold(
-                  currentRoute: '/scholarships',
-                  onLogout: _handleLogout,
-                  child: const ScholarshipsScreen(),
-                ),
-              );
-            case '/exam':
-              return MaterialPageRoute(
-                builder: (context) => MainScaffold(
-                  currentRoute: '/exam',
-                  onLogout: _handleLogout,
-                  child: const ExaminationScreen(),
-                ),
-              );
-            case '/resources':
-              return MaterialPageRoute(
-                builder: (context) => MainScaffold(
-                  currentRoute: '/resources',
-                  onLogout: _handleLogout,
-                  child: const ResourcesScreen(),
-                ),
-              );
-            case '/about':
-              return MaterialPageRoute(
-                builder: (context) => MainScaffold(
-                  currentRoute: '/about',
-                  onLogout: _handleLogout,
-                  child: const AboutUsScreen(),
-                ),
-              );
-            case '/profile':
-              return MaterialPageRoute(
-                builder: (context) => MainScaffold(
-                  currentRoute: '/profile',
-                  onLogout: _handleLogout,
-                  child: const ProfilePageScreen(),
-                ),
-              );
-          }
-        }
-
-        // Default route
-        return MaterialPageRoute(
-          builder: (context) => const LandingPageScreen(),
-        );
+    return MaterialApp(
+      title: 'Career Guidance App',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
+      initialRoute: _isAuthenticated ? '/dashboard' : '/',
+      routes: {
+        '/': (context) => const LandingPageScreen(),
+        '/signin': (context) => SignInScreen(onLogin: _handleLogin),
+        '/signup': (context) => SignUpScreen(onSignup: _handleLogin),
+        '/profile-setup-basic': (context) =>
+            ProfileSetupBasicScreen(onLogin: _handleLogin),
+        '/roadmap': (context) => const RoadmapPageScreen(),
+        '/dashboard': (context) => MainScaffold(
+          currentRoute: '/dashboard',
+          onLogout: _handleLogout,
+          child: const DashboardScreen(),
+        ),
+        '/colleges': (context) => MainScaffold(
+          currentRoute: '/colleges',
+          onLogout: _handleLogout,
+          child: const CollegesScreen(),
+        ),
+        '/scholarships': (context) => MainScaffold(
+          currentRoute: '/scholarships',
+          onLogout: _handleLogout,
+          child: const ScholarshipsScreen(),
+        ),
+        '/exam': (context) => MainScaffold(
+          currentRoute: '/exam',
+          onLogout: _handleLogout,
+          child: const ExaminationScreen(),
+        ),
+        '/resources': (context) => MainScaffold(
+          currentRoute: '/resources',
+          onLogout: _handleLogout,
+          child: const ResourcesScreen(),
+        ),
+        '/about': (context) => MainScaffold(
+          currentRoute: '/about',
+          onLogout: _handleLogout,
+          child: const AboutUsScreen(),
+        ),
+        '/profile': (context) => MainScaffold(
+          currentRoute: '/profile',
+          onLogout: _handleLogout,
+          child: const ProfilePageScreen(),
+        ),
       },
     );
   }
@@ -249,7 +187,10 @@ class _MainScaffoldState extends State<MainScaffold> {
           Stack(
             children: [
               IconButton(
-                icon: const Icon(Icons.notifications_outlined, color: Colors.black87),
+                icon: const Icon(
+                  Icons.notifications_outlined,
+                  color: Colors.black87,
+                ),
                 onPressed: () {
                   // Handle notification
                 },
@@ -283,7 +224,11 @@ class _MainScaffoldState extends State<MainScaffold> {
           const SizedBox(width: 8),
           // Profile dropdown
           PopupMenuButton<String>(
-            icon: const Icon(Icons.person_outline, color: Colors.black87, size: 28),
+            icon: const Icon(
+              Icons.person_outline,
+              color: Colors.black87,
+              size: 28,
+            ),
             offset: const Offset(0, 50),
             onSelected: (value) {
               if (value == 'logout') {
@@ -293,18 +238,9 @@ class _MainScaffoldState extends State<MainScaffold> {
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: '/profile',
-                child: Text('Profile'),
-              ),
-              const PopupMenuItem(
-                value: '/about',
-                child: Text('About Us'),
-              ),
-              const PopupMenuItem(
-                value: 'logout',
-                child: Text('Logout'),
-              ),
+              const PopupMenuItem(value: '/profile', child: Text('Profile')),
+              const PopupMenuItem(value: '/about', child: Text('About Us')),
+              const PopupMenuItem(value: 'logout', child: Text('Logout')),
             ],
           ),
           const SizedBox(width: 16),

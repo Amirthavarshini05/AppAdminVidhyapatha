@@ -15,18 +15,20 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # State Management & Storage
-  shared_preferences: ^2.2.2  # For session/auth storage (replaces sessionStorage)
+  shared_preferences: ^2.2.2
   
   # HTTP & API
   http: ^1.2.0
   
-  # Supabase (if you're using it)
+  # Supabase
   supabase_flutter: ^2.5.0
   
-  # UI & Utilities
-  intl: ^0.19.0  # For date formatting
-  url_launcher: ^6.2.5  # For opening URLs
+  # Charts
+  fl_chart: ^0.68.0
   
+  # UI & Utilities
+  intl: ^0.19.0
+  url_launcher: ^6.2.5
 
 dev_dependencies:
   flutter_test:
@@ -36,7 +38,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # Assets
-  assets:
-    - assets/images/
-    - assets/icons/
+  # Assets - Comment out until you create the folders
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
