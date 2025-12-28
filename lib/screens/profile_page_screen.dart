@@ -132,6 +132,8 @@ class _ProfilePageScreenState extends State<ProfilePageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 800;
+    
     if (_isLoading) {
       return const Scaffold(
         body: Center(
@@ -144,9 +146,9 @@ class _ProfilePageScreenState extends State<ProfilePageScreen> {
       backgroundColor: Colors.grey[50],
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(40.0),
+          padding: EdgeInsets.all(isMobile ? 16.0 : 40.0),
           child: Container(
-            constraints: const BoxConstraints(maxWidth: 1000),
+            constraints: BoxConstraints(maxWidth: isMobile ? double.infinity : 1000),
             child: Column(
               children: [
                 if (_profile != null && !_isEditing) _buildProfileCard(),
@@ -264,23 +266,28 @@ class _ProfilePageScreenState extends State<ProfilePageScreen> {
           // Body
           Padding(
             padding: const EdgeInsets.all(24),
-            child: GridView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 3,
-              ),
-              children: [
-                _buildInfoTile('First Name', _profile!['first_name']),
-                _buildInfoTile('Middle Name', _profile!['middle_name']),
-                _buildInfoTile('Last Name', _profile!['last_name']),
-                _buildInfoTile('DOB', _profile!['dob']),
-                _buildInfoTile('Phone', _profile!['phone']),
-                _buildInfoTile('Gender', _profile!['gender']),
-              ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                int crossAxisCount = constraints.maxWidth > 600 ? 2 : 1;
+                return GridView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: crossAxisCount,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: crossAxisCount == 1 ? 4 : 3,
+                  ),
+                  children: [
+                    _buildInfoTile('First Name', _profile!['first_name']),
+                    _buildInfoTile('Middle Name', _profile!['middle_name']),
+                    _buildInfoTile('Last Name', _profile!['last_name']),
+                    _buildInfoTile('DOB', _profile!['dob']),
+                    _buildInfoTile('Phone', _profile!['phone']),
+                    _buildInfoTile('Gender', _profile!['gender']),
+                  ],
+                );
+              },
             ),
           ),
         ],
@@ -399,23 +406,28 @@ class _ProfilePageScreenState extends State<ProfilePageScreen> {
             padding: const EdgeInsets.all(32),
             child: Column(
               children: [
-                GridView(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 3,
-                  ),
-                  children: [
-                    _buildTextField('First Name', _firstNameController),
-                    _buildTextField('Middle Name', _middleNameController),
-                    _buildTextField('Last Name', _lastNameController),
-                    _buildDateField('Date of Birth', _dobController),
-                    _buildTextField('Phone', _phoneController),
-                    _buildGenderDropdown(),
-                  ],
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    int crossAxisCount = constraints.maxWidth > 600 ? 2 : 1;
+                    return GridView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: crossAxisCount == 1 ? 5 : 3,
+                      ),
+                      children: [
+                        _buildTextField('First Name', _firstNameController),
+                        _buildTextField('Middle Name', _middleNameController),
+                        _buildTextField('Last Name', _lastNameController),
+                        _buildDateField('Date of Birth', _dobController),
+                        _buildTextField('Phone', _phoneController),
+                        _buildGenderDropdown(),
+                      ],
+                    );
+                  },
                 ),
                 const SizedBox(height: 32),
 

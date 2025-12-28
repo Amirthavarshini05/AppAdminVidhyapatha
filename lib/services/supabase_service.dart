@@ -35,15 +35,23 @@ class SupabaseService {
         return {'error': 'Sign in failed'};
       }
 
+      // DEBUG: Log session info
+      print('✅ Sign in successful');
+      print('✅ User: ${response.user!.email}');
+      print('✅ Access Token: ${response.session?.accessToken?.substring(0, 20)}...');
+
       return {
         'user': {
           'email': response.user!.email,
           'id': response.user!.id,
         },
+        'session': response.session,
       };
     } on AuthException catch (e) {
+      print('❌ Auth error: ${e.message}');
       return {'error': e.message};
     } catch (e) {
+      print('❌ Unexpected error: $e');
       return {'error': 'An unexpected error occurred: $e'};
     }
   }
@@ -164,9 +172,51 @@ class SupabaseService {
           .select()
           .single();
 
+      print('✅ Insert success: $response');
       return {'success': true, 'data': response};
     } catch (e) {
+      print('❌ Insert error: $e');
       return {'error': 'Failed to insert data: $e'};
+    }
+  }
+
+  // Update data in any table
+  static Future<Map<String, dynamic>> updateData(
+    String tableName,
+    Map<String, dynamic> data,
+    String column,
+    dynamic value,
+  ) async {
+    try {
+      final response = await client
+          .from(tableName)
+          .update(data)
+          .eq(column, value)
+          .select()
+          .single();
+
+      print('✅ Update success: $response');
+      return {'success': true, 'data': response};
+    } catch (e) {
+      print('❌ Update error: $e');
+      return {'error': 'Failed to update data: $e'};
+    }
+  }
+
+  // Delete data from any table
+  static Future<Map<String, dynamic>> deleteData(
+    String tableName,
+    String column,
+    dynamic value,
+  ) async {
+    try {
+      await client.from(tableName).delete().eq(column, value);
+
+      print('✅ Delete success');
+      return {'success': true};
+    } catch (e) {
+      print('❌ Delete error: $e');
+      return {'error': 'Failed to delete data: $e'};
     }
   }
 

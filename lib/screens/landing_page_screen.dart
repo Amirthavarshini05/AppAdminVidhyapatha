@@ -43,6 +43,8 @@ class _LandingPageScreenState extends State<LandingPageScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 800;
+    
     final features = [
       {
         'title': 'Manage Aptitude Tests',
@@ -79,25 +81,25 @@ class _LandingPageScreenState extends State<LandingPageScreen>
         child: Column(
           children: [
             // HERO SECTION
-            _buildHeroSection(context),
+            _buildHeroSection(context, isMobile),
 
             // FEATURES SECTION
-            _buildFeaturesSection(features),
+            _buildFeaturesSection(features, isMobile),
 
             // STEPS SECTION
-            _buildStepsSection(steps),
+            _buildStepsSection(steps, isMobile),
 
             // CTA SECTION
-            _buildCTASection(context),
+            _buildCTASection(context, isMobile),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeroSection(BuildContext context) {
+  Widget _buildHeroSection(BuildContext context, bool isMobile) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 60),
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24, vertical: isMobile ? 40 : 60),
       child: Column(
         children: [
           // Badge
@@ -140,7 +142,7 @@ class _LandingPageScreenState extends State<LandingPageScreen>
                   'Manage Student Pathways',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 42,
+                    fontSize: isMobile ? 32 : 42,
                     fontWeight: FontWeight.w800,
                     color: const Color(0xFF444EE7),
                     height: 1.2,
@@ -151,7 +153,7 @@ class _LandingPageScreenState extends State<LandingPageScreen>
                   'With Full Control',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 32,
+                    fontSize: isMobile ? 24 : 32,
                     fontWeight: FontWeight.w600,
                     fontStyle: FontStyle.italic,
                     color: const Color(0xFF6B74FF),
@@ -259,9 +261,9 @@ class _LandingPageScreenState extends State<LandingPageScreen>
     );
   }
 
-  Widget _buildFeaturesSection(List<Map<String, dynamic>> features) {
+  Widget _buildFeaturesSection(List<Map<String, dynamic>> features, bool isMobile) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 60),
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24, vertical: isMobile ? 40 : 60),
       color: const Color(0xFFF5F6FF),
       child: Column(
         children: [
@@ -393,9 +395,9 @@ class _LandingPageScreenState extends State<LandingPageScreen>
     );
   }
 
-  Widget _buildStepsSection(List<String> steps) {
+  Widget _buildStepsSection(List<String> steps, bool isMobile) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 60),
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24, vertical: isMobile ? 40 : 60),
       child: Column(
         children: [
           const Text(
@@ -496,9 +498,9 @@ class _LandingPageScreenState extends State<LandingPageScreen>
     );
   }
 
-  Widget _buildCTASection(BuildContext context) {
+  Widget _buildCTASection(BuildContext context, bool isMobile) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 80),
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 24, vertical: isMobile ? 40 : 80),
       color: const Color(0xFFF5F6FF),
       child: Column(
         children: [

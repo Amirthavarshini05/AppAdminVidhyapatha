@@ -194,33 +194,37 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 800;
+    
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(32.0),
+        padding: EdgeInsets.all(isMobile ? 16.0 : 32.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              alignment: WrapAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'E-Books & Resources',
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: isMobile ? 22 : 28,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF0F172A),
+                        color: const Color(0xFF0F172A),
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Manage digital learning materials',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: isMobile ? 12 : 14,
                         color: Colors.grey[600],
                       ),
                     ),
@@ -238,8 +242,8 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF4F46E5),
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isMobile ? 16 : 20,
                         vertical: 12,
                       ),
                       shape: RoundedRectangleBorder(

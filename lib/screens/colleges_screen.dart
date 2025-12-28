@@ -254,55 +254,196 @@ class _CollegesScreenState extends State<CollegesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  '🎓 Colleges',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF4F46E5),
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _showForm = !_showForm;
-                      _editingId = null;
-                      _clearForm();
-                    });
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add College'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[600],
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
+            // Header with Add Button
+            Container(
+              padding: const EdgeInsets.all(16),
+              color: Colors.white,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    '🎓 Colleges',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF4F46E5),
                     ),
                   ),
-                ),
-              ],
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _showForm = !_showForm;
+                        _editingId = null;
+                        _clearForm();
+                      });
+                    },
+                    icon: Icon(_showForm ? Icons.close : Icons.add),
+                    label: Text(_showForm ? 'Cancel' : 'Add'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green[600],
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 24),
 
-            // Form
-            if (_showForm) _buildForm(),
-
-            // Filters
-            _buildFilters(),
-            const SizedBox(height: 24),
-
-            // Table
-            Expanded(child: _buildTable()),
+            // Content
+            Expanded(
+              child: _showForm
+                  ? _buildForm()
+                  : SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          // Search Box (Full Width)
+                          TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              hintText: '🔍 Search college name',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            onChanged: (value) => _fetchColleges(),
+                          ),
+                          const SizedBox(height: 16),
+                          
+                          // State Dropdown
+                          DropdownButtonFormField<String>(
+                            value: _filterState.isEmpty ? null : _filterState,
+                            decoration: InputDecoration(
+                              labelText: 'State',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 14,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            isExpanded: true,
+                            items: [
+                              const DropdownMenuItem(value: '', child: Text('All states')),
+                              ..._states.map((s) => DropdownMenuItem(value: s, child: Text(s))),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _filterState = value ?? '';
+                              });
+                              _fetchColleges();
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          
+                          // District Dropdown
+                          DropdownButtonFormField<String>(
+                            value: _filterDistrict.isEmpty ? null : _filterDistrict,
+                            decoration: InputDecoration(
+                              labelText: 'District',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 14,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            isExpanded: true,
+                            items: [
+                              const DropdownMenuItem(value: '', child: Text('All districts')),
+                              ..._districts.map((d) => DropdownMenuItem(value: d, child: Text(d))),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _filterDistrict = value ?? '';
+                              });
+                              _fetchColleges();
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          
+                          // Medium Dropdown
+                          DropdownButtonFormField<String>(
+                            value: _filterMedium.isEmpty ? null : _filterMedium,
+                            decoration: InputDecoration(
+                              labelText: 'Medium',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 14,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            isExpanded: true,
+                            items: [
+                              const DropdownMenuItem(value: '', child: Text('All mediums')),
+                              ..._mediums.map((m) => DropdownMenuItem(value: m, child: Text(m))),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _filterMedium = value ?? '';
+                              });
+                              _fetchColleges();
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          
+                          // Stream Dropdown
+                          DropdownButtonFormField<String>(
+                            value: _filterStream.isEmpty ? null : _filterStream,
+                            decoration: InputDecoration(
+                              labelText: 'Stream',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 14,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            isExpanded: true,
+                            items: [
+                              const DropdownMenuItem(value: '', child: Text('All streams')),
+                              ..._streams.map((s) => DropdownMenuItem(value: s, child: Text(s))),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _filterStream = value ?? '';
+                              });
+                              _fetchColleges();
+                            },
+                          ),
+                          const SizedBox(height: 24),
+                          
+                          // College List
+                          _buildCollegeList(),
+                        ],
+                      ),
+                    ),
+            ),
           ],
         ),
       ),
@@ -311,267 +452,232 @@ class _CollegesScreenState extends State<CollegesScreen> {
 
   Widget _buildForm() {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      color: Colors.white,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            _editingId != null ? '✏️ Edit College' : '➕ Add College',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          // Form Header
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              border: Border(
+                bottom: BorderSide(color: Colors.grey[300]!),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  _editingId != null ? Icons.edit : Icons.add_circle,
+                  color: const Color(0xFF4F46E5),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  _editingId != null ? 'Edit College' : 'Add New College',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 300,
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 3,
-              ),
-              itemCount: _collegeFields.length,
-              itemBuilder: (context, index) {
-                final field = _collegeFields[index];
-                final isJson = _jsonFields.contains(field);
-                return TextField(
-                  controller: _formControllers[field],
-                  decoration: InputDecoration(
-                    labelText: field,
-                    hintText: isJson ? 'comma separated' : '',
-                    border: const OutlineInputBorder(),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+          
+          // Form Fields (Scrollable) - SINGLE COLUMN
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: _collegeFields.map((field) {
+                  final isJson = _jsonFields.contains(field);
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: TextField(
+                      controller: _formControllers[field],
+                      maxLines: isJson ? 3 : 1,
+                      decoration: InputDecoration(
+                        labelText: field.replaceAll('_', ' ').toUpperCase(),
+                        hintText: isJson ? 'Enter comma separated values' : '',
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.all(12),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: _saveCollege,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4F46E5),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                ),
-                child: const Text('Save'),
-              ),
-              const SizedBox(width: 12),
-              OutlinedButton(
-                onPressed: () {
-                  setState(() {
-                    _showForm = false;
-                  });
-                },
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                ),
-                child: const Text('Cancel'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilters() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                hintText: '🔍 Search college name',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              onChanged: (value) => _fetchColleges(),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: DropdownButtonFormField<String>(
-              value: _filterState.isEmpty ? null : _filterState,
-              decoration: const InputDecoration(
-                labelText: 'State',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              items: [
-                const DropdownMenuItem(value: '', child: Text('All states')),
-                ..._states.map((s) => DropdownMenuItem(value: s, child: Text(s))),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _filterState = value ?? '';
-                });
-                _fetchColleges();
-              },
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: DropdownButtonFormField<String>(
-              value: _filterDistrict.isEmpty ? null : _filterDistrict,
-              decoration: const InputDecoration(
-                labelText: 'District',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              items: [
-                const DropdownMenuItem(value: '', child: Text('All districts')),
-                ..._districts.map((d) => DropdownMenuItem(value: d, child: Text(d))),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _filterDistrict = value ?? '';
-                });
-                _fetchColleges();
-              },
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: DropdownButtonFormField<String>(
-              value: _filterMedium.isEmpty ? null : _filterMedium,
-              decoration: const InputDecoration(
-                labelText: 'Medium',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              items: [
-                const DropdownMenuItem(value: '', child: Text('All mediums')),
-                ..._mediums.map((m) => DropdownMenuItem(value: m, child: Text(m))),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _filterMedium = value ?? '';
-                });
-                _fetchColleges();
-              },
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: DropdownButtonFormField<String>(
-              value: _filterStream.isEmpty ? null : _filterStream,
-              decoration: const InputDecoration(
-                labelText: 'Stream',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              items: [
-                const DropdownMenuItem(value: '', child: Text('All streams')),
-                ..._streams.map((s) => DropdownMenuItem(value: s, child: Text(s))),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _filterStream = value ?? '';
-                });
-                _fetchColleges();
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTable() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('Name')),
-                  DataColumn(label: Text('State')),
-                  DataColumn(label: Text('District')),
-                  DataColumn(label: Text('Stream')),
-                  DataColumn(label: Text('Actions')),
-                ],
-                rows: _colleges.map((college) {
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(
-                        college['name'] ?? '',
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      )),
-                      DataCell(Text(college['state'] ?? '')),
-                      DataCell(Text(college['district'] ?? '')),
-                      DataCell(Text(
-                        college['stream'] is List
-                            ? (college['stream'] as List).join(', ')
-                            : '',
-                      )),
-                      DataCell(Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () => _editCollege(college),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => _deleteCollege(college['id']),
-                          ),
-                        ],
-                      )),
-                    ],
                   );
                 }).toList(),
               ),
             ),
+          ),
+          
+          // Save/Cancel Buttons
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, -2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _saveCollege,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF4F46E5),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text(
+                      'Save College',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        _showForm = false;
+                        _clearForm();
+                      });
+                    },
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCollegeList() {
+    if (_isLoading) {
+      return const Padding(
+        padding: EdgeInsets.all(50),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_colleges.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(50),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Center(
+          child: Text(
+            'No colleges found',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+            ),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Name',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                Text(
+                  'Actions',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // List
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _colleges.length,
+            separatorBuilder: (context, index) => Divider(
+              height: 1,
+              color: Colors.grey[200],
+            ),
+            itemBuilder: (context, index) {
+              final college = _colleges[index];
+              return ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                title: Text(
+                  college['name'] ?? 'Unnamed College',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue, size: 22),
+                      onPressed: () => _editCollege(college),
+                      tooltip: 'Edit',
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red, size: 22),
+                      onPressed: () => _deleteCollege(college['id']),
+                      tooltip: 'Delete',
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

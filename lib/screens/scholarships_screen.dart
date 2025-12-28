@@ -236,55 +236,173 @@ class _ScholarshipsScreenState extends State<ScholarshipsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  '🎓 Scholarships',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF4F46E5),
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _showForm = !_showForm;
-                      _editingId = null;
-                      _clearForm();
-                    });
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Add Scholarship'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[600],
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
+            // Header with Add Button
+            Container(
+              padding: const EdgeInsets.all(16),
+              color: Colors.white,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    '🎓 Scholarships',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF4F46E5),
                     ),
                   ),
-                ),
-              ],
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _showForm = !_showForm;
+                        _editingId = null;
+                        _clearForm();
+                      });
+                    },
+                    icon: Icon(_showForm ? Icons.close : Icons.add),
+                    label: Text(_showForm ? 'Cancel' : 'Add'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green[600],
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 24),
 
-            // Form
-            if (_showForm) _buildForm(),
-
-            // Search & Filters
-            _buildFilters(),
-            const SizedBox(height: 24),
-
-            // Table
-            Expanded(child: _buildTable()),
+            // Content
+            Expanded(
+              child: _showForm
+                  ? _buildForm()
+                  : SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          // Search Box (Full Width)
+                          TextField(
+                            controller: _searchController,
+                            decoration: InputDecoration(
+                              hintText: '🔍 Search scholarships...',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            onChanged: (value) => setState(() {}),
+                          ),
+                          const SizedBox(height: 16),
+                          
+                          // Type Dropdown
+                          DropdownButtonFormField<String>(
+                            value: _filterType.isEmpty ? null : _filterType,
+                            decoration: InputDecoration(
+                              labelText: 'Type',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 14,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            isExpanded: true,
+                            items: const [
+                              DropdownMenuItem(value: '', child: Text('All Types')),
+                              DropdownMenuItem(value: 'Merit Based', child: Text('Merit Based')),
+                              DropdownMenuItem(value: 'Means Based', child: Text('Means Based')),
+                              DropdownMenuItem(value: 'Minority', child: Text('Minority')),
+                              DropdownMenuItem(value: 'Gender Specific', child: Text('Gender Specific')),
+                              DropdownMenuItem(value: 'Disability', child: Text('Disability')),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _filterType = value ?? '';
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          
+                          // Gender Dropdown
+                          DropdownButtonFormField<String>(
+                            value: _filterGender.isEmpty ? null : _filterGender,
+                            decoration: InputDecoration(
+                              labelText: 'Gender',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 14,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            isExpanded: true,
+                            items: const [
+                              DropdownMenuItem(value: '', child: Text('All Genders')),
+                              DropdownMenuItem(value: 'Female', child: Text('Female')),
+                              DropdownMenuItem(value: 'Any', child: Text('Any')),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _filterGender = value ?? '';
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 12),
+                          
+                          // Category Dropdown
+                          DropdownButtonFormField<String>(
+                            value: _filterCategory.isEmpty ? null : _filterCategory,
+                            decoration: InputDecoration(
+                              labelText: 'Category',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 14,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                            ),
+                            isExpanded: true,
+                            items: const [
+                              DropdownMenuItem(value: '', child: Text('All Categories')),
+                              DropdownMenuItem(value: 'General', child: Text('General')),
+                              DropdownMenuItem(value: 'OBC', child: Text('OBC')),
+                              DropdownMenuItem(value: 'SC', child: Text('SC')),
+                              DropdownMenuItem(value: 'ST', child: Text('ST')),
+                              DropdownMenuItem(value: 'Minority', child: Text('Minority')),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                _filterCategory = value ?? '';
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 24),
+                          
+                          // Scholarships List
+                          _buildScholarshipsList(),
+                        ],
+                      ),
+                    ),
+            ),
           ],
         ),
       ),
@@ -293,259 +411,240 @@ class _ScholarshipsScreenState extends State<ScholarshipsScreen> {
 
   Widget _buildForm() {
     return Container(
-      padding: const EdgeInsets.all(24),
-      margin: const EdgeInsets.only(bottom: 24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      color: Colors.white,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            _editingId != null ? '✏️ Edit Scholarship' : '➕ Add Scholarship',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          // Form Header
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              border: Border(
+                bottom: BorderSide(color: Colors.grey[300]!),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  _editingId != null ? Icons.edit : Icons.add_circle,
+                  color: const Color(0xFF4F46E5),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  _editingId != null ? 'Edit Scholarship' : 'Add New Scholarship',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 300,
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 3,
-              ),
-              itemCount: _scholarshipFields.length,
-              itemBuilder: (context, index) {
-                final field = _scholarshipFields[index];
-                final isArray = _arrayFields.contains(field);
-                return TextField(
-                  controller: _formControllers[field],
-                  decoration: InputDecoration(
-                    labelText: field.replaceAll('_', ' '),
-                    hintText: isArray ? 'comma separated' : '',
-                    border: const OutlineInputBorder(),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
+          
+          // Form Fields (Scrollable) - SINGLE COLUMN
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: _scholarshipFields.map((field) {
+                  final isArray = _arrayFields.contains(field);
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: TextField(
+                      controller: _formControllers[field],
+                      maxLines: isArray || field == 'description' || field == 'eligibility_details' ? 3 : 1,
+                      keyboardType: field == 'income_limit' ? TextInputType.number : TextInputType.text,
+                      decoration: InputDecoration(
+                        labelText: field.replaceAll('_', ' ').toUpperCase(),
+                        hintText: isArray ? 'Enter comma separated values' : '',
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.all(12),
+                        filled: true,
+                        fillColor: Colors.grey[50],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: _saveScholarship,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4F46E5),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                ),
-                child: const Text('Save'),
-              ),
-              const SizedBox(width: 12),
-              OutlinedButton(
-                onPressed: () {
-                  setState(() {
-                    _showForm = false;
-                  });
-                },
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                ),
-                child: const Text('Cancel'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilters() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                hintText: '🔍 Search scholarships...',
-                border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              onChanged: (value) => setState(() {}),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: DropdownButtonFormField<String>(
-              value: _filterType.isEmpty ? null : _filterType,
-              decoration: const InputDecoration(
-                labelText: 'Type',
-                border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              items: const [
-                DropdownMenuItem(value: '', child: Text('All Types')),
-                DropdownMenuItem(
-                    value: 'Merit Based', child: Text('Merit Based')),
-                DropdownMenuItem(
-                    value: 'Means Based', child: Text('Means Based')),
-                DropdownMenuItem(value: 'Minority', child: Text('Minority')),
-                DropdownMenuItem(
-                    value: 'Gender Specific', child: Text('Gender Specific')),
-                DropdownMenuItem(
-                    value: 'Disability', child: Text('Disability')),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _filterType = value ?? '';
-                });
-              },
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: DropdownButtonFormField<String>(
-              value: _filterGender.isEmpty ? null : _filterGender,
-              decoration: const InputDecoration(
-                labelText: 'Gender',
-                border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              items: const [
-                DropdownMenuItem(value: '', child: Text('All Genders')),
-                DropdownMenuItem(value: 'Female', child: Text('Female')),
-                DropdownMenuItem(value: 'Any', child: Text('Any')),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _filterGender = value ?? '';
-                });
-              },
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: DropdownButtonFormField<String>(
-              value: _filterCategory.isEmpty ? null : _filterCategory,
-              decoration: const InputDecoration(
-                labelText: 'Category',
-                border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              items: const [
-                DropdownMenuItem(value: '', child: Text('All Categories')),
-                DropdownMenuItem(value: 'General', child: Text('General')),
-                DropdownMenuItem(value: 'OBC', child: Text('OBC')),
-                DropdownMenuItem(value: 'SC', child: Text('SC')),
-                DropdownMenuItem(value: 'ST', child: Text('ST')),
-                DropdownMenuItem(value: 'Minority', child: Text('Minority')),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _filterCategory = value ?? '';
-                });
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTable() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('Name')),
-                  DataColumn(label: Text('Provider')),
-                  DataColumn(label: Text('Region')),
-                  DataColumn(label: Text('Amount')),
-                  DataColumn(label: Text('Deadline')),
-                  DataColumn(label: Text('Actions')),
-                ],
-                rows: _filteredScholarships.map((scholarship) {
-                  return DataRow(
-                    cells: [
-                      DataCell(Text(
-                        scholarship['name'] ?? '',
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      )),
-                      DataCell(Text(scholarship['provider'] ?? '')),
-                      DataCell(Text(scholarship['region'] ?? '')),
-                      DataCell(Text('₹ ${scholarship['amount_benefit'] ?? ''}')),
-                      DataCell(Text(scholarship['deadline'] ?? '')),
-                      DataCell(Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () => _editScholarship(scholarship),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () =>
-                                _deleteScholarship(scholarship['id']),
-                          ),
-                        ],
-                      )),
-                    ],
                   );
                 }).toList(),
               ),
             ),
+          ),
+          
+          // Save/Cancel Buttons
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, -2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _saveScholarship,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF4F46E5),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text(
+                      'Save Scholarship',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        _showForm = false;
+                        _clearForm();
+                      });
+                    },
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScholarshipsList() {
+    if (_isLoading) {
+      return const Padding(
+        padding: EdgeInsets.all(50),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_filteredScholarships.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.all(50),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Center(
+          child: Text(
+            'No scholarships found',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+            ),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Name',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                Text(
+                  'Actions',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // List
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _filteredScholarships.length,
+            separatorBuilder: (context, index) => Divider(
+              height: 1,
+              color: Colors.grey[200],
+            ),
+            itemBuilder: (context, index) {
+              final scholarship = _filteredScholarships[index];
+              return ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                title: Text(
+                  scholarship['name'] ?? 'Unnamed Scholarship',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+                subtitle: Text(
+                  '${scholarship['provider'] ?? ''} • ₹${scholarship['amount_benefit'] ?? ''}',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue, size: 22),
+                      onPressed: () => _editScholarship(scholarship),
+                      tooltip: 'Edit',
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red, size: 22),
+                      onPressed: () => _deleteScholarship(scholarship['id']),
+                      tooltip: 'Delete',
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

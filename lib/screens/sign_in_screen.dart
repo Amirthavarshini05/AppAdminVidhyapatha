@@ -79,6 +79,11 @@ class _SignInScreenState extends State<SignInScreen> {
         return;
       }
 
+      // DEBUG: Check authentication
+      final currentUser = SupabaseService.getCurrentUser();
+      print('✅ Signed in user: ${currentUser?.email}');
+      print('✅ User ID: ${currentUser?.id}');
+
       // Fetch user profile
       final userEmail = response['user']['email'];
       final profileData = await SupabaseService.getProfile(userEmail);
@@ -115,14 +120,16 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+    
     return Scaffold(
       backgroundColor: const Color(0xFFEEF0FF),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.all(isMobile ? 16.0 : 24.0),
           child: Container(
-            constraints: const BoxConstraints(maxWidth: 600),
-            padding: const EdgeInsets.all(48.0),
+            constraints: BoxConstraints(maxWidth: isMobile ? double.infinity : 600),
+            padding: EdgeInsets.all(isMobile ? 24.0 : 48.0),
             decoration: BoxDecoration(
               color: const Color(0xFFF5F6FF),
               borderRadius: BorderRadius.circular(24),
@@ -144,12 +151,12 @@ class _SignInScreenState extends State<SignInScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // Title
-                  const Text(
+                  Text(
                     'Sign In',
                     style: TextStyle(
-                      fontSize: 36,
+                      fontSize: isMobile ? 28 : 36,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF444EE7),
+                      color: const Color(0xFF444EE7),
                     ),
                   ),
                   const SizedBox(height: 40),

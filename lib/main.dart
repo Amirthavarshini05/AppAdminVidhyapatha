@@ -8,6 +8,10 @@ void main() async {
   // Initialize Supabase
   await SupabaseService.initialize();
   
+  // DEBUG: Check if there's an existing session
+  final currentUser = SupabaseService.getCurrentUser();
+  print('🔐 App started - Current user: ${currentUser?.email}');
+  
   runApp(const MyApp());
 }
 
